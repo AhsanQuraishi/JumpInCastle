@@ -90,23 +90,27 @@ export default function TrampolineHero({
     let pointerX = 0;
     let pointerY = 0;
 
+    // Phones report DPR 3; a full-screen canvas at that density with heavy
+    // shadowBlur every frame is what made mobile sluggish. 2x looks the same.
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
     const resize = () => {
       width = hero.clientWidth;
       height = hero.clientHeight;
-      canvas.width = Math.max(1, Math.floor(width * window.devicePixelRatio));
-      canvas.height = Math.max(1, Math.floor(height * window.devicePixelRatio));
+      canvas.width = Math.max(1, Math.floor(width * dpr));
+      canvas.height = Math.max(1, Math.floor(height * dpr));
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      ctx.setTransform(
-        window.devicePixelRatio,
-        0,
-        0,
-        window.devicePixelRatio,
-        0,
-        0,
-      );
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
+
+    // Skip drawing while the hero is scrolled out of view.
+    let visible = true;
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    });
+    visibilityObserver.observe(hero);
 
     const fontFamily =
       getComputedStyle(document.documentElement)
@@ -123,13 +127,26 @@ export default function TrampolineHero({
       };
     };
 
-    const titleFont = Math.max(30, Math.min(width * 0.062, 68));
+    const baseTitleFont = Math.max(30, Math.min(width * 0.062, 68));
     const BIG_SCALE = 1.55;
 
     const measureAt = (char, size) => {
       ctx.font = `900 ${size}px ${fontFamily}`;
       return char === " " ? size * 0.3 : ctx.measureText(char).width;
     };
+
+    // On narrow phones the 30px floor made the longest line overflow the
+    // screen, so shrink the title until its widest line fits (worst-case
+    // letter size, matching the random range used below).
+    const widestLine = Math.max(
+      ...lines.slice(0, 2).map((line) =>
+        [...line].reduce((sum, char, index, chars) => {
+          const wordStart = char !== " " && (index === 0 || chars[index - 1] === " ");
+          return sum + measureAt(char, baseTitleFont * (wordStart ? BIG_SCALE : 1.08));
+        }, 0),
+      ),
+    );
+    const titleFont = baseTitleFont * Math.min(1, (width * 0.92) / widestLine);
 
     const stage = trampoline();
     const titleCenterX = width * 0.5;
@@ -576,6 +593,11 @@ export default function TrampolineHero({
     };
 
     const draw = (now) => {
+      if (!visible) {
+        lastTime = now;
+        frame = requestAnimationFrame(draw);
+        return;
+      }
       const dt = Math.min(2.4, Math.max(0.5, (now - lastTime) / 16.67));
       lastTime = now;
       elapsed += dt * 16.67;
@@ -658,6 +680,7 @@ export default function TrampolineHero({
 
     return () => {
       cancelAnimationFrame(frame);
+      visibilityObserver.disconnect();
       window.removeEventListener("resize", resize);
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointermove", onPointerMove);
@@ -698,7 +721,9 @@ export default function TrampolineHero({
           position: "absolute",
           inset: 0,
           display: "block",
-          touchAction: "none",
+          // pan-y keeps vertical swipes scrolling the page on mobile; the
+          // hero fills the screen, so "none" made the whole page unscrollable.
+          touchAction: "pan-y",
           cursor: "grab",
         }}
       />

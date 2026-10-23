@@ -152,6 +152,13 @@ export default function PhysicsHeading({ text, height = 130 }) {
 
     let rafId;
     function draw() {
+      // Once every letter has homed in, the frame is static — stop the
+      // physics runner and the draw loop instead of repainting forever.
+      const done =
+        phase === "homing" &&
+        letterBodies.every(
+          (b) => Math.abs(b.targetX - b.position.x) < 0.5 && Math.abs(b.targetY - b.position.y) < 0.5
+        );
       ctx.clearRect(0, 0, W, H);
       ctx.font = FONT;
       ctx.textAlign = "center";
@@ -164,6 +171,10 @@ export default function PhysicsHeading({ text, height = 130 }) {
         ctx.fillText(b.letter, 0, 0);
         ctx.restore();
       });
+      if (done) {
+        Runner.stop(runner);
+        return;
+      }
       rafId = requestAnimationFrame(draw);
     }
     draw();

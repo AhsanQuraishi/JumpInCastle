@@ -158,7 +158,7 @@ body {
 @media (max-width: 767px) {
   .jic-gallery-section { padding: 48px 20px 56px !important; }
   .jic-gallery-rail { flex-direction: column !important; height: auto !important; }
-  .jic-gallery-panel { flex-grow: 1 !important; aspect-ratio: 16 / 10; }
+  .jic-gallery-panel { flex-grow: 1 !important; flex-basis: auto !important; aspect-ratio: 16 / 10; }
   .jic-gallery-zoom { transform: scale(1) !important; }
   .jic-gallery-label { writing-mode: horizontal-tb !important; transform: none !important; color: #fff !important; }
   .jic-gallery-meta { opacity: 1 !important; }
@@ -402,6 +402,9 @@ body {
   position: absolute;
   animation: blobFloat 12s ease-in-out infinite;
   filter: blur(0px);
+}
+@media (max-width: 767px) {
+  .jic-blob { animation: none; }
 }
 
 /* thick-border / hard-shadow card system */
