@@ -127,36 +127,53 @@ export default function TrampolineHero({
       };
     };
 
-    const baseTitleFont = Math.max(30, Math.min(width * 0.062, 68));
-    const BIG_SCALE = 1.55;
+    // Phones get bigger letters (and bigger word-initials) by wrapping the
+    // title onto more lines instead of squeezing it into two.
+    const narrow = width < 600;
+    const baseTitleFont = narrow ? 34 : Math.max(30, Math.min(width * 0.062, 68));
+    const BIG_SCALE = narrow ? 1.8 : 1.55;
+    const maxLineWidth = width * 0.92;
 
     const measureAt = (char, size) => {
       ctx.font = `900 ${size}px ${fontFamily}`;
       return char === " " ? size * 0.3 : ctx.measureText(char).width;
     };
 
-    // On narrow phones the 30px floor made the longest line overflow the
-    // screen, so shrink the title until its widest line fits (worst-case
-    // letter size, matching the random range used below).
-    const widestLine = Math.max(
-      ...lines.slice(0, 2).map((line) =>
-        [...line].reduce((sum, char, index, chars) => {
-          const wordStart = char !== " " && (index === 0 || chars[index - 1] === " ");
-          return sum + measureAt(char, baseTitleFont * (wordStart ? BIG_SCALE : 1.08));
-        }, 0),
-      ),
-    );
-    const titleFont = baseTitleFont * Math.min(1, (width * 0.92) / widestLine);
+    // Worst-case line width (largest random letter size used below).
+    const measureLine = (line) =>
+      [...line].reduce((sum, char, index, chars) => {
+        const wordStart = char !== " " && (index === 0 || chars[index - 1] === " ");
+        return sum + measureAt(char, baseTitleFont * (wordStart ? BIG_SCALE : 1.08));
+      }, 0);
+
+    let titleLines = lines.slice(0, 2);
+    if (narrow) {
+      titleLines = [];
+      lines.slice(0, 2).join(" ").split(" ").forEach((word) => {
+        const last = titleLines[titleLines.length - 1];
+        if (last && measureLine(`${last} ${word}`) <= maxLineWidth) {
+          titleLines[titleLines.length - 1] = `${last} ${word}`;
+        } else {
+          titleLines.push(word);
+        }
+      });
+    }
+
+    // Shrink the title if its widest line still doesn't fit the screen.
+    const widestLine = Math.max(...titleLines.map(measureLine));
+    const titleFont = baseTitleFont * Math.min(1, maxLineWidth / widestLine);
 
     const titleCenterX = width * 0.5;
-    const lineGap = titleFont * 1.45;
-    const titleTop = height * 0.26;
+    const lineGap = titleFont * (narrow ? 1.6 : 1.45);
+    const titleTop = height * (narrow ? 0.24 : 0.26);
 
-    const headlineBottom = titleTop + lineGap + titleFont * BIG_SCALE * 0.42;
+    const headlineBottom =
+      titleTop + (titleLines.length - 1) * lineGap + titleFont * BIG_SCALE * 0.42;
     // Sit the trampoline just under the title. A fixed 60% of the hero left a
     // big empty gap on phones, where the title is much smaller.
     const stage = trampoline();
-    stage.y = Math.min(stage.y, headlineBottom + Math.max(90, titleFont * 2.4));
+    const underTitle = headlineBottom + (narrow ? 64 : Math.max(90, titleFont * 2.4));
+    stage.y = narrow ? underTitle : Math.min(stage.y, underTitle);
     const trampolineBottom = stage.y + Math.max(stage.ry, 70) + 28;
     const contentBottom = Math.max(headlineBottom, trampolineBottom);
     if (spacerRef.current) {
@@ -174,7 +191,7 @@ export default function TrampolineHero({
     let groupIndex = 0;
     let indexInGroup = 0;
 
-    lines.slice(0, 2).forEach((line, lineIndex) => {
+    titleLines.forEach((line, lineIndex) => {
       const chars = [...line];
       const isWordStart = (index) =>
         chars[index] !== " " && (index === 0 || chars[index - 1] === " ");
@@ -679,12 +696,16 @@ export default function TrampolineHero({
     canvas.addEventListener("pointerup", releasePointer);
     canvas.addEventListener("pointercancel", releasePointer);
     window.addEventListener("resize", resize);
+    // The hero's height now follows its content, so keep the canvas in sync.
+    const sizeObserver = new ResizeObserver(resize);
+    sizeObserver.observe(hero);
     frame = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(frame);
       visibilityObserver.disconnect();
       window.removeEventListener("resize", resize);
+      sizeObserver.disconnect();
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerup", releasePointer);
@@ -731,16 +752,17 @@ export default function TrampolineHero({
         }}
       />
 
+      {/* In normal flow (not absolute) so the hero grows to fit its content;
+          on phones the CTAs were being clipped by the 100vh section. */}
       <div
         style={{
-          position: "absolute",
-          inset: 0,
+          position: "relative",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           textAlign: "center",
           pointerEvents: "none",
-          padding: "8vh 5vw 0",
+          padding: "8vh 5vw 48px",
         }}
       >
         <div
