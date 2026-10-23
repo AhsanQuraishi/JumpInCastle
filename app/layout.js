@@ -1,4 +1,4 @@
-import { Archivo_Black, Space_Grotesk } from "next/font/google";
+import { Archivo_Black, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import ScrollProgress from "@/components/ScrollProgress";
 import ConfettiLayer from "@/components/ConfettiLayer";
@@ -17,6 +17,13 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
+
 export const metadata = {
   title: "Jump In Castle — Multan's Biggest Indoor Adventure Park",
   description:
@@ -25,7 +32,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${archivoBlack.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${archivoBlack.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <body>
         <ScrollProgress />
         <div className="jic-grain" />

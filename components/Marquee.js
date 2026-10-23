@@ -7,7 +7,7 @@ function WordRow({ keyPrefix }) {
         <span
           key={`${keyPrefix}-${i}`}
           className="jic-chip"
-          style={{ borderColor: w.color, color: w.color }}
+          style={{ background: w.color, color: "#0A0E1A", border: "none" }}
         >
           {w.text}
         </span>

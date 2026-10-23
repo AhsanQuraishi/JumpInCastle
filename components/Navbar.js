@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BOOK_HREF, navLinks } from "@/data/siteData";
+import { navLinks } from "@/data/siteData";
 
 function Icon({ path }) {
   return (
@@ -210,9 +210,7 @@ export default function Navbar() {
 
       <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
         <a
-          href={BOOK_HREF}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/book"
           className="jic-nav-cta jic-confetti-trigger"
           style={{
             background: "linear-gradient(135deg,#ff3f8e,#b47aff)",
@@ -254,9 +252,7 @@ export default function Navbar() {
           </a>
         ))}
         <a
-          href={BOOK_HREF}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/book"
           className="jic-mobile-link jic-mobile-cta jic-confetti-trigger"
           style={{ transitionDelay: menuOpen ? `${navLinks.length * 0.05}s` : "0s" }}
           onClick={() => setMenuOpen(false)}

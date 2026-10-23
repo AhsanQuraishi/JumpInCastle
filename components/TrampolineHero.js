@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { HERO_VIVID as VIVID } from "@/data/siteData";
+import { HERO_VIVID as VIVID, COLORS } from "@/data/siteData";
 import HeroStaticFallback from "./HeroStaticFallback";
 
 const heroSectionStyle = {
@@ -14,13 +14,31 @@ const heroSectionStyle = {
 
 function DefaultAtmosphere() {
   return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        background: `radial-gradient(ellipse 45% 55% at 82% 52%, ${VIVID.pink}20, transparent 62%), radial-gradient(ellipse 42% 48% at 20% 25%, ${VIVID.darkYellow}18, transparent 62%), radial-gradient(ellipse 60% 60% at 40% 100%, ${VIVID.white}0b, transparent 65%), linear-gradient(135deg, #11152c 0%, #070914 72%)`,
-      }}
-    />
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(135deg, #11152c 0%, #070914 72%)",
+        }}
+      />
+      <div
+        className="jic-blob"
+        style={{ top: "6%", left: "58%", width: 380, height: 380, background: COLORS.magenta, opacity: 0.3, filter: "blur(80px)" }}
+      />
+      <div
+        className="jic-blob"
+        style={{ top: "52%", left: "4%", width: 320, height: 320, background: COLORS.cyan, opacity: 0.24, filter: "blur(80px)", animationDelay: "-4s" }}
+      />
+      <div
+        className="jic-blob"
+        style={{ top: "66%", left: "68%", width: 300, height: 300, background: COLORS.violet, opacity: 0.26, filter: "blur(80px)", animationDelay: "-8s" }}
+      />
+      <div
+        className="jic-blob"
+        style={{ top: "10%", left: "10%", width: 240, height: 240, background: COLORS.yellow, opacity: 0.18, filter: "blur(80px)", animationDelay: "-2s" }}
+      />
+    </div>
   );
 }
 
@@ -129,8 +147,8 @@ export default function TrampolineHero({
     }
 
     const letters = [];
-    const ACCENT_COLORS = [VIVID.cyan, VIVID.pink, VIVID.violet, VIVID.darkYellow];
-    let accentIndex = 0;
+    const PALETTE = [COLORS.magenta, COLORS.cyan, COLORS.lime, COLORS.orange, COLORS.violet, COLORS.yellow];
+    let colorIndex = 0;
     let groupNumber = 0;
     const groupPattern = [2, 3, 4];
     let groupIndex = 0;
@@ -174,23 +192,19 @@ export default function TrampolineHero({
           width: charWidth,
           height: size,
           fontSize: size,
-          color: wordStart
-            ? ACCENT_COLORS[accentIndex++ % ACCENT_COLORS.length]
-            : lineIndex === 0
-              ? "#d8faff"
-              : "#ffe0f0",
+          color: PALETTE[colorIndex++ % PALETTE.length],
           big: wordStart,
-          sparklePhase: Math.random() * Math.PI * 2,
           targetX,
           targetY,
           releaseAt: 550 + groupNumber * 760 + indexInGroup * 90,
           state: "waiting",
+
+          
           bounceStartedAt: 0,
           bounceCount: 0,
           restitution: 0.58 + Math.random() * 0.16,
           squash: 1,
           stretch: 1,
-          squashHoldUntil: 0,
           grabbed: false,
         };
         letters.push(letter);
@@ -213,6 +227,7 @@ export default function TrampolineHero({
       letter.stretch = Math.max(0.52, 2.05 - intensity);
       letter.squashHoldUntil = elapsed + 90;
     };
+    
 
     const updateLetter = (letter, dt) => {
       if (letter.grabbed) {
@@ -302,51 +317,8 @@ export default function TrampolineHero({
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      const pulse = letter.big
-        ? 0.5 + 0.5 * Math.sin(elapsed / 260 + letter.sparklePhase)
-        : 0;
-
-      ctx.shadowColor = hovered ? VIVID.darkYellow : letter.color;
-      ctx.shadowBlur = hovered ? 34 : letter.big ? 20 + pulse * 22 : 24;
       ctx.fillStyle = hovered ? VIVID.darkYellow : letter.color;
       ctx.fillText(letter.char, 0, 0);
-
-      if (letter.big) {
-        ctx.lineWidth = Math.max(2, letter.fontSize * 0.035);
-        ctx.strokeStyle = letter.color;
-        ctx.shadowBlur = 8 + pulse * 14;
-        ctx.strokeText(letter.char, 0, 0);
-      }
-
-      ctx.shadowBlur = 4;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillText(letter.char, 0, -1);
-
-      if (letter.big) {
-        const twinkle = Math.sin(elapsed / 240 + letter.sparklePhase * 3);
-        if (twinkle > 0.55) {
-          const sx = letter.width * 0.34;
-          const sy = -letter.fontSize * 0.4;
-          const r = 3.2;
-          ctx.save();
-          ctx.globalAlpha = (twinkle - 0.55) / 0.45;
-          ctx.fillStyle = "#ffffff";
-          ctx.shadowColor = letter.color;
-          ctx.shadowBlur = 12;
-          ctx.beginPath();
-          ctx.moveTo(sx, sy - r);
-          ctx.lineTo(sx + r * 0.3, sy - r * 0.3);
-          ctx.lineTo(sx + r, sy);
-          ctx.lineTo(sx + r * 0.3, sy + r * 0.3);
-          ctx.lineTo(sx, sy + r);
-          ctx.lineTo(sx - r * 0.3, sy + r * 0.3);
-          ctx.lineTo(sx - r, sy);
-          ctx.lineTo(sx - r * 0.3, sy - r * 0.3);
-          ctx.closePath();
-          ctx.fill();
-          ctx.restore();
-        }
-      }
 
       ctx.restore();
     };

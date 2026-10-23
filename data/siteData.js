@@ -99,29 +99,6 @@ export function getFacilityBySlug(slug) {
   return facilities.find((f) => f.slug === slug);
 }
 
-export const schoolPerks = [
-  "Reserved arrival slot & group check-in",
-  "Dedicated marshals in every zone",
-  "Grip socks included for all students",
-  "Group lunch & drinks package option",
-  "Free entry for accompanying teachers",
-];
-
-export const eduPerks = [
-  "Guided 'Physics of Play' trampoline session",
-  "Problem-solving challenge in the Laser Maze",
-  "Coding & motion demo in the projection room",
-  "Curriculum-aligned worksheets provided",
-  "Certificate of completion for every child",
-];
-
-export const schoolStats = [
-  { stat: "Ages 4+", label: "Suitable", color: COLORS.cyan },
-  { stat: "1:8", label: "Marshal ratio", color: COLORS.lime },
-  { stat: "3 hrs", label: "Typical visit", color: COLORS.orange },
-  { stat: "Free", label: "Teacher entry", color: COLORS.magenta },
-];
-
 export const packages = [
   {
     name: "Mini",
@@ -184,12 +161,12 @@ export const partyAddons = [
 ];
 
 export const rules = [
-  ["01", "Grip socks are mandatory on all trampoline and soft-play zones (available on-site)."],
-  ["02", "One adult must supervise children under 5 at all times."],
-  ["03", "No food, drink, sharp objects or jewellery inside play zones."],
-  ["04", "Follow marshal instructions and posted height/age limits for each attraction."],
-  ["05", "No double-bouncing, pushing or somersaults unless in a designated zone."],
-].map(([n, t]) => ({ n, t }));
+  ["01", "Grip socks are mandatory on all trampoline and soft-play zones (available on-site).", "Grip socks", "#A3E635"],
+  ["02", "One adult must supervise children under 5 at all times.", "Supervision", "#22D3EE"],
+  ["03", "No food, drink, sharp objects or jewellery inside play zones.", "Clear pockets", "#FF3D8B"],
+  ["04", "Follow marshal instructions and posted height/age limits for each attraction.", "Height limits", "#FB923C"],
+  ["05", "No double-bouncing, pushing or somersaults unless in a designated zone.", "One at a time", "#A78BFA"],
+].map(([n, t, keyword, accent]) => ({ n, t, keyword, accent }));
 
 export const gallery = [
   { label: "Trampoline Arena", bg: "linear-gradient(135deg,#ff3f8e33,#b47aff22)", ratio: "4/3", img: "bounce-trampoline.jpg" },
@@ -201,18 +178,32 @@ export const gallery = [
 ].map((g) => ({ ...g, img: g.img ? `/images/${g.img}` : "", hasImg: !!g.img }));
 
 export const hours = [
-  { day: "Monday – Thursday", time: "12 PM – 10 PM" },
-  { day: "Friday – Saturday", time: "11 AM – 12 AM" },
-  { day: "Sunday", time: "11 AM – 11 PM" },
+  { day: "Monday – Thursday", time: "12 PM – 10 PM", accent: "#FF3D8B" },
+  { day: "Friday – Saturday", time: "11 AM – 12 AM", accent: "#22D3EE" },
+  { day: "Sunday", time: "11 AM – 11 PM", accent: "#4ADE80" },
 ];
 
+// Drives the live open/closed status on the hours bar. 0 = Sunday … 6 = Saturday,
+// 24h decimal hours, close: 24 means midnight.
+export const weekSchedule = [
+  { day: "SUN", open: 11, close: 23 },
+  { day: "MON", open: 12, close: 22 },
+  { day: "TUE", open: 12, close: 22 },
+  { day: "WED", open: 12, close: 22 },
+  { day: "THU", open: 12, close: 22 },
+  { day: "FRI", open: 11, close: 24 },
+  { day: "SAT", open: 11, close: 24 },
+];
+
+export const MAPS_HREF = "https://www.google.com/maps/search/?api=1&query=Jump+In+Castle+Multan";
+
 export const faqData = [
-  ["What ages is Jump In Castle for?", "Everyone! We have soft-play and kiddie rides for toddlers, thrill zones for kids and teens, and plenty for adults too. Some attractions have height or age limits posted on-site."],
-  ["Do I need to book in advance?", "Walk-ins are welcome, but weekends and holidays get busy — we strongly recommend booking your session or party ahead of time via WhatsApp."],
-  ["What should we wear?", "Comfortable, active clothing. Grip socks are required in trampoline and soft-play zones and can be purchased at reception."],
-  ["Can adults jump too?", "Absolutely. The park is built for all ages and adults are welcome across most attractions."],
-  ["How do birthday parties work?", "Choose a package, pick a date, and our team handles the rest — private space, a host, food and unlimited play. Message us to check availability."],
-].map(([question, answer]) => ({ question, answer }));
+  ["What ages is Jump In Castle for?", "Jump In Castle is built for ages 3 to 14. Under 5s have their own soft play zone with a separate entry, so the little ones are never in the way of the big jumpers.", "#FF3D8B"],
+  ["Do I need to book in advance?", "Walk-ins are welcome on weekdays. Weekends and school holidays fill up fast, so booking online holds your slot and skips the queue.", "#22D3EE"],
+  ["What should we wear?", "Comfortable clothes and grip socks. Grip socks are required on the trampolines and are available at the front desk.", "#4ADE80"],
+  ["Can adults jump too?", "Yes. Adults jump on the same ticket. If you would rather watch, there is a parent lounge with a clear view of the arena and a coffee counter.", "#FB923C"],
+  ["How do birthday parties work?", "Choose a package, pick a date, and our team handles the rest — private space, a host, food and unlimited play. Message us to check availability.", "#A78BFA"],
+].map(([question, answer, accent]) => ({ question, answer, accent }));
 
 export const navLinks = [
   { href: "#attractions", label: "Attractions" },

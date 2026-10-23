@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#0a0f1e; font-family:'Archivo',system-ui,sans-serif; }
+  a { color:#A3E635; text-decoration:none; }
+  a:hover { color:#c3f04f; }
+</style>
+</helmet>
+
+<div style="background:#0a0f1e;padding:clamp(64px,7vw,96px) clamp(24px,5vw,72px) clamp(72px,8vw,104px)">
+  <div style="max-width:1440px;margin:0 auto">
+
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:clamp(28px,4vw,48px);margin-bottom:clamp(36px,4vw,52px)">
+      <div style="flex:1 1 480px;min-width:300px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.28em;color:#22D3EE;margin-bottom:16px">SAFETY FIRST</div>
+        <h2 style="margin:0;font-family:'Archivo Black',sans-serif;font-size:clamp(46px,5.4vw,70px);line-height:.9;letter-spacing:-.02em;color:#fff;text-transform:uppercase">Play hard, play safe</h2>
+      </div>
+      <p style="flex:0 1 420px;margin:0;font-size:16px;line-height:1.65;color:#8b94a6;text-wrap:pretty;padding-bottom:8px">Every zone is monitored by trained marshals, and all guests complete a quick safety briefing on arrival. Follow the house rules and everyone goes home smiling.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+      <sc-for list="{{ rules }}" as="r" hint-placeholder-count="5">
+        <div style="position:relative;overflow:hidden;border-radius:16px;padding:30px 30px 32px;display:flex;flex-direction:column;gap:14px;transition:border-color .25s ease;background:{{ r.wash }};border:1px solid {{ r.edge }};border-top:3px solid {{ r.color }}" style-hover="border-color:{{ r.color }}">
+          <span style="position:absolute;top:-26px;right:-8px;font-family:'Archivo Black',sans-serif;font-size:96px;line-height:1;pointer-events:none;color:{{ r.ghost }}">{{ r.num }}</span>
+          <div style="position:relative;display:flex;align-items:center;gap:10px">
+            <span style="width:7px;height:7px;border-radius:50%;background:{{ r.color }}"></span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:{{ r.color }}">{{ r.key }}</span>
+          </div>
+          <p style="position:relative;margin:0;font-size:16px;line-height:1.6;color:#dfe6f0;text-wrap:pretty">{{ r.text }}</p>
+        </div>
+      </sc-for>
+      <div style="border-radius:16px;padding:30px;background:linear-gradient(140deg,rgba(163,230,53,.13),rgba(163,230,53,0));border:1px solid rgba(163,230,53,.3);display:flex;flex-direction:column;justify-content:center;gap:10px">
+        <h3 style="margin:0;font-family:'Archivo',sans-serif;font-weight:700;font-size:19px;color:#fff">Marshals on every zone</h3>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#a9bb92;text-wrap:pretty">First aid trained, briefed daily. Ask any of them if you are unsure.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;monoAccent&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Style&quot;},&quot;showGhostNumbers&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Style&quot;},&quot;showKeywords&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+class Component extends DCLogic {
+  rules = [
+    { key: 'Grip socks', color: '#A3E635', text: 'Grip socks are mandatory on all trampoline and soft-play zones (available on-site).' },
+    { key: 'Supervision', color: '#22D3EE', text: 'One adult must supervise children under 5 at all times.' },
+    { key: 'Clear pockets', color: '#FF3D8B', text: 'No food, drink, sharp objects or jewellery inside play zones.' },
+    { key: 'Height limits', color: '#FB923C', text: 'Follow marshal instructions and posted height/age limits for each attraction.' },
+    { key: 'One at a time', color: '#A78BFA', text: 'No double-bouncing, pushing or somersaults unless in a designated zone.' }
+  ];
+
+  renderVals() {
+    const mono = this.props.monoAccent ?? false;
+    const ghosts = this.props.showGhostNumbers ?? true;
+    const keys = this.props.showKeywords ?? true;
+    return {
+      rules: this.rules.map((r, i) => {
+        const c = mono ? '#A3E635' : r.color;
+        return {
+          ...r,
+          key: keys ? r.key : '',
+          color: c,
+          num: String(i + 1).padStart(2, '0'),
+          wash: 'linear-gradient(150deg, ' + c + '1f 0%, ' + c + '0a 42%, #0e1626 78%)',
+          edge: c + '3d',
+          ghost: ghosts ? c + '1f' : 'transparent'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -95,92 +95,137 @@ body {
   border: 0;
 }
 
-/* ---------- party configurator ---------- */
-.jic-tier-btn {
-  transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+/* ---------- party packages (design 1c) ---------- */
+.jic-pkg-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
 }
-.jic-tier-btn:hover {
-  transform: translateY(-2px);
+.jic-pkg-header p {
+  text-align: right;
 }
-.jic-neon-card:hover {
-  border-color: var(--glow, rgba(255,255,255,.3)) !important;
-  box-shadow: 0 0 16px color-mix(in srgb, var(--glow, #fff) 55%, transparent), 0 8px 20px -10px color-mix(in srgb, var(--glow, #fff) 70%, transparent);
+.jic-pkg-switch {
+  display: flex;
 }
-
-.jic-addon-chip {
-  transition: transform .25s cubic-bezier(.34,1.56,.64,1), background .2s ease, border-color .2s ease;
+.jic-pkg-columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
 }
-.jic-addon-chip:hover {
-  transform: translateY(-2px);
+.jic-pkg-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
 }
-
-.jic-configurator-step {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,.2);
-  background: rgba(255,255,255,.06);
-  color: #fff;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background .2s ease, transform .15s ease;
+@media (max-width: 900px) {
+  .jic-pkg-columns { grid-template-columns: 1fr !important; }
+  .jic-pkg-header { flex-direction: column !important; align-items: flex-start !important; }
+  .jic-pkg-header p { text-align: left !important; max-width: none !important; }
+  .jic-pkg-heading { font-size: 44px !important; }
 }
-.jic-configurator-step:hover {
-  background: rgba(255,255,255,.14);
-}
-.jic-configurator-step:active {
-  transform: scale(0.92);
-}
-
-.jic-configurator-slider {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.14);
-  outline: none;
-  cursor: pointer;
-}
-.jic-configurator-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--accent, #ff3f8e);
-  border: 3px solid #0A0E1A;
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent, #ff3f8e) 30%, transparent), 0 4px 12px rgba(0,0,0,.4);
-  cursor: pointer;
-  transition: transform .2s cubic-bezier(.34,1.56,.64,1);
-}
-.jic-configurator-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-}
-.jic-configurator-slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--accent, #ff3f8e);
-  border: 3px solid #0A0E1A;
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent, #ff3f8e) 30%, transparent), 0 4px 12px rgba(0,0,0,.4);
-  cursor: pointer;
+@media (max-width: 600px) {
+  .jic-pkg-switch { flex-direction: column !important; }
+  .jic-pkg-total { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+  .jic-pkg-total a { width: 100%; text-align: center; }
+  .jic-pkg-body { padding: 32px 20px 0 !important; }
 }
 
-@keyframes jic-total-pop {
-  0% { transform: scale(0.85) rotate(-2deg); opacity: .5; }
-  55% { transform: scale(1.08) rotate(1deg); }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+/* ---------- school visits (design 3a) ---------- */
+.jic-school-panel {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+}
+@media (max-width: 900px) {
+  .jic-school-panel { grid-template-columns: 1fr !important; }
+  .jic-school-photo { height: 200px !important; border-right: none !important; border-bottom: 1px solid rgba(255,255,255,.08) !important; }
+}
+@media (max-width: 700px) {
+  .jic-school-section { padding: 32px 20px !important; }
+  .jic-school-facts { gap: 10px 20px !important; }
+  .jic-school-cta { display: block !important; width: 100%; text-align: center; }
 }
 
-/* ---------- park map ---------- */
-.jic-map-tile {
-  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+/* ---------- gallery accordion (design 2b) ---------- */
+@media (max-width: 1279px) {
+  .jic-gallery-section { padding: 72px 40px 88px !important; }
+  .jic-gallery-rail { height: 420px !important; }
+  .jic-gallery-heading { font-size: 56px !important; }
 }
-.jic-map-tile:hover {
-  background: color-mix(in srgb, var(--tile-color, #fff) 20%, transparent) !important;
-  border-color: var(--tile-color, rgba(255,255,255,.3)) !important;
-  transform: translateY(-2px);
+@media (max-width: 767px) {
+  .jic-gallery-section { padding: 48px 20px 56px !important; }
+  .jic-gallery-rail { flex-direction: column !important; height: auto !important; }
+  .jic-gallery-panel { flex-grow: 1 !important; aspect-ratio: 16 / 10; }
+  .jic-gallery-zoom { transform: scale(1) !important; }
+  .jic-gallery-label { writing-mode: horizontal-tb !important; transform: none !important; color: #fff !important; }
+  .jic-gallery-meta { opacity: 1 !important; }
+  .jic-gallery-hint { display: none !important; }
+}
+
+/* ---------- faq split accordion (design 1a) ---------- */
+.jic-faq-row:focus-visible {
+  outline: 2px solid #4ADE80;
+  outline-offset: 4px;
+}
+.jic-faq-cta:hover {
+  background: #6ee79b !important;
+}
+
+/* ---------- hours & location bar (design 1c) ---------- */
+@keyframes livePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,.55); }
+  70% { box-shadow: 0 0 0 9px rgba(74,222,128,0); }
+}
+.jic-hours-dot {
+  animation: livePulse 2.2s ease-out infinite;
+}
+.jic-hours-primary-btn:hover { background: #e6ecf5 !important; }
+.jic-hours-secondary-btn:hover { border-color: #4ADE80 !important; color: #4ADE80 !important; }
+.jic-hours-btn:focus-visible { outline: 2px solid #4ADE80; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .jic-hours-dot { animation: none; }
+}
+@media (max-width: 900px) {
+  .jic-hours-col { border-left: none !important; padding-left: 0 !important; padding-right: 0 !important; }
+  .jic-hours-btn { width: 100%; }
+}
+
+/* ---------- footer (CTA + sitemap) ---------- */
+.jic-footer-link {
+  color: #c4ccd9;
+  transition: color .15s ease;
+}
+.jic-footer-link:hover {
+  color: #ffffff;
+}
+.jic-footer-link:focus-visible,
+.jic-footer-cta:focus-visible {
+  outline: 2px solid #FF3D8B;
+  outline-offset: 4px;
+}
+.jic-footer-cta:hover {
+  filter: brightness(1.12);
+}
+@media (max-width: 600px) {
+  .jic-footer-columns { grid-template-columns: 1fr !important; }
+  .jic-footer-cta { display: block !important; width: 100%; text-align: center; }
+}
+@media (max-width: 900px) and (min-width: 601px) {
+  .jic-footer-columns { grid-template-columns: repeat(2, minmax(120px,1fr)) !important; }
+}
+
+/* ---------- safety rules board (design 1b) ---------- */
+.jic-rule-card {
+  transition: border-color .25s ease;
+}
+.jic-rule-card:hover {
+  border-color: var(--rule-accent) !important;
+}
+@media (max-width: 400px) {
+  .jic-rule-ghost { display: none; }
 }
 
 /* ---------- attraction carousel ---------- */
@@ -435,33 +480,6 @@ body {
   z-index: 10000;
   pointer-events: none;
   animation: confettiBurst .9s cubic-bezier(.2,.7,.3,1) forwards;
-}
-
-/* gallery hover zoom */
-.jic-gallery-item img { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
-.jic-gallery-item:hover img { transform: scale(1.1) rotate(1deg); }
-
-.jic-gallery-view {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(7,7,15,0);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .3s ease, background .3s ease;
-}
-.jic-gallery-item:hover .jic-gallery-view {
-  opacity: 1;
-  background: rgba(7,7,15,.4);
-}
-.jic-gallery-view svg {
-  transform: scale(.6);
-  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
-}
-.jic-gallery-item:hover .jic-gallery-view svg {
-  transform: scale(1);
 }
 
 /* reusable glossy shine sweep, triggered on hover */

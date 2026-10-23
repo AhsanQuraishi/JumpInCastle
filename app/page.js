@@ -2,7 +2,6 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import Attractions from "@/components/Attractions";
-import ParkMap from "@/components/ParkMap";
 import Parties from "@/components/Parties";
 import Schools from "@/components/Schools";
 import Membership from "@/components/Membership";
@@ -19,7 +18,6 @@ export default function Home() {
       <Hero />
       <Marquee />
       <Attractions />
-      <ParkMap />
       <Parties />
       <Schools />
       <Membership />
