@@ -148,12 +148,15 @@ export default function TrampolineHero({
     );
     const titleFont = baseTitleFont * Math.min(1, (width * 0.92) / widestLine);
 
-    const stage = trampoline();
     const titleCenterX = width * 0.5;
     const lineGap = titleFont * 1.45;
     const titleTop = height * 0.26;
 
     const headlineBottom = titleTop + lineGap + titleFont * BIG_SCALE * 0.42;
+    // Sit the trampoline just under the title. A fixed 60% of the hero left a
+    // big empty gap on phones, where the title is much smaller.
+    const stage = trampoline();
+    stage.y = Math.min(stage.y, headlineBottom + Math.max(90, titleFont * 2.4));
     const trampolineBottom = stage.y + Math.max(stage.ry, 70) + 28;
     const contentBottom = Math.max(headlineBottom, trampolineBottom);
     if (spacerRef.current) {
@@ -213,7 +216,7 @@ export default function TrampolineHero({
           big: wordStart,
           targetX,
           targetY,
-          releaseAt: 550 + groupNumber * 760 + indexInGroup * 90,
+          releaseAt: 400 + groupNumber * 220 + indexInGroup * 60,
           state: "waiting",
 
           
@@ -290,7 +293,7 @@ export default function TrampolineHero({
 
         if (
           letter.state === "bouncing" &&
-          elapsed - letter.bounceStartedAt > 2100
+          elapsed - letter.bounceStartedAt > 1200
         ) {
           letter.state = "settling";
         }
@@ -306,7 +309,7 @@ export default function TrampolineHero({
       }
 
       if (letter.state === "settling") {
-        const ease = Math.min(1, 0.08 * dt);
+        const ease = Math.min(1, 0.14 * dt);
         letter.x += (letter.targetX - letter.x) * ease;
         letter.y += (letter.targetY - letter.y) * ease;
         letter.rotation *= 0.88;
@@ -618,7 +621,7 @@ export default function TrampolineHero({
         setSettled(true);
       }
 
-      if (elapsed > 7200 && !allSettled) {
+      if (elapsed > 3200 && !allSettled) {
         letters.forEach((letter) => {
           if (letter.state !== "settled") letter.state = "settling";
         });
