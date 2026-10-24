@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { navLinks } from "@/data/siteData";
+import Logo from "./Logo";
 
 function Icon({ path }) {
   return (
@@ -57,6 +58,16 @@ const ICONS = {
       }
     />
   ),
+};
+
+// Each link gets its own accent so the bar reads as colourful, not flat grey.
+const LINK_COLORS = {
+  "#attractions": "#ff3f8e",
+  "#parties": "#ffee00",
+  "#schools": "#22d3ee",
+  "#membership": "#b47aff",
+  "#hours": "#a3ff4d",
+  "#faq": "#ff9433",
 };
 
 export default function Navbar() {
@@ -117,7 +128,12 @@ export default function Navbar() {
     }
     const elRect = el.getBoundingClientRect();
     const containerRect = container.getBoundingClientRect();
-    setPill({ left: elRect.left - containerRect.left, width: elRect.width, opacity: 1 });
+    setPill({
+      left: elRect.left - containerRect.left,
+      width: elRect.width,
+      opacity: 1,
+      color: LINK_COLORS[navLinks[idx].href],
+    });
   }, [hoverIdx, activeIdx]);
 
   return (
@@ -131,48 +147,13 @@ export default function Navbar() {
         alignItems: "center",
         justifyContent: "space-between",
         padding: "18px 40px",
-        background: "rgba(7,7,15,.55)",
+        background:
+          "linear-gradient(90deg, rgba(255,63,142,.16), rgba(7,7,15,.6) 30%, rgba(7,7,15,.6) 70%, rgba(34,211,238,.16))",
         backdropFilter: "blur(18px)",
         WebkitBackdropFilter: "blur(18px)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <div
-          className="jic-nav-logo-badge"
-          style={{
-            width: 42,
-            height: 42,
-            borderRadius: 12,
-            background: "linear-gradient(135deg,#ff3f8e,#b47aff)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontFamily: "var(--font-archivo-black)",
-            fontSize: 22,
-            boxShadow: "0 4px 18px rgba(255,30,111,.35)",
-          }}
-        >
-          J
-        </div>
-        <div style={{ lineHeight: 1 }}>
-          <div
-            style={{
-              fontFamily: "var(--font-archivo-black)",
-              fontSize: 18,
-              letterSpacing: ".5px",
-              background: "linear-gradient(90deg,#ffffff,#e6d9ff)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
-          >
-            JUMP IN CASTLE
-          </div>
-          <div style={{ fontSize: 10, letterSpacing: 3, color: "rgba(255,255,255,.45)", textTransform: "uppercase" }}>
-            Multan · Adventure Park
-          </div>
-        </div>
-      </div>
+      <Logo />
 
       <div
         ref={containerRef}
@@ -191,7 +172,7 @@ export default function Navbar() {
       >
         <div
           className="jic-nav-pill"
-          style={{ left: pill.left, width: pill.width, opacity: pill.opacity }}
+          style={{ left: pill.left, width: pill.width, opacity: pill.opacity, "--pill-c": pill.color }}
         />
         {navLinks.map((link, i) => (
           <a
@@ -200,7 +181,7 @@ export default function Navbar() {
             href={`/${link.href}`}
             className={`jic-nav-link${activeIdx === i ? " jic-nav-link-active" : ""}`}
             onMouseEnter={() => setHoverIdx(i)}
-            style={{ animationDelay: `${0.15 + i * 0.07}s` }}
+            style={{ animationDelay: `${0.15 + i * 0.07}s`, "--c": LINK_COLORS[link.href] }}
           >
             <span className="jic-nav-icon">{ICONS[link.href]}</span>
             {link.label}
@@ -213,9 +194,10 @@ export default function Navbar() {
           href="/book"
           className="jic-nav-cta jic-confetti-trigger"
           style={{
-            background: "linear-gradient(135deg,#ff3f8e,#b47aff)",
+            background: "linear-gradient(90deg,#ff3f8e,#ff9433,#b47aff,#ff3f8e)",
+            backgroundSize: "300% 100%",
             color: "#fff",
-            fontWeight: 600,
+            fontWeight: 700,
             padding: "11px 24px",
             borderRadius: 999,
             fontSize: 14,
@@ -244,10 +226,10 @@ export default function Navbar() {
             key={link.href}
             href={`/${link.href}`}
             className="jic-mobile-link"
-            style={{ transitionDelay: menuOpen ? `${i * 0.05}s` : "0s" }}
+            style={{ transitionDelay: menuOpen ? `${i * 0.05}s` : "0s", "--c": LINK_COLORS[link.href] }}
             onClick={() => setMenuOpen(false)}
           >
-            <span className="jic-nav-icon" style={{ opacity: 0.85 }}>{ICONS[link.href]}</span>
+            <span className="jic-nav-icon">{ICONS[link.href]}</span>
             {link.label}
           </a>
         ))}

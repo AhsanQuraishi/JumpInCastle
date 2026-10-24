@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { BOOK_HREF, waLink, weekSchedule, WHATSAPP_NUMBER } from "@/data/siteData";
 import { getKarachiNow, fmtHour } from "@/lib/schedule";
+import Logo from "./Logo";
 
 const WHATSAPP_HREF = waLink("Hi Jump In Castle! I'd like to know more.");
 const CALL_HREF = `tel:+${WHATSAPP_NUMBER}`;
@@ -172,28 +173,7 @@ export default function Footer() {
             gap: 20,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
-            <div
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 9,
-                background: "linear-gradient(135deg,#FF3D8B,#A855F7)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontFamily: "var(--font-archivo-black)",
-                fontSize: 17,
-                color: "#fff",
-                flexShrink: 0,
-              }}
-            >
-              J
-            </div>
-            <span style={{ fontFamily: "var(--font-archivo-black)", fontSize: 16, letterSpacing: ".02em", textTransform: "uppercase", color: "#fff" }}>
-              Jump In Castle
-            </span>
-          </div>
+          <Logo />
           <div style={{ fontFamily: "var(--font-jetbrains-mono)", fontSize: 12, letterSpacing: ".06em", color: "#5f6a7d" }}>
             {meta ? `Multan, Pakistan · © ${meta.year} Jump In Castle. All rights reserved.` : "Multan, Pakistan · Jump In Castle. All rights reserved."}
           </div>

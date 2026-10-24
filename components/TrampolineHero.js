@@ -94,7 +94,9 @@ export default function TrampolineHero({
     // shadowBlur every frame is what made mobile sluggish. 2x looks the same.
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
+    let needsRedraw = true;
     const resize = () => {
+      needsRedraw = true;
       width = hero.clientWidth;
       height = hero.clientHeight;
       canvas.width = Math.max(1, Math.floor(width * dpr));
@@ -210,7 +212,9 @@ export default function TrampolineHero({
         const charWidth = widths[index];
         const size = sizes[index];
         const targetX = cursor + charWidth / 2;
-        const targetY = titleTop + lineIndex * lineGap;
+        // A small random lift and tilt so the settled title looks hand-placed,
+        // not ruler-straight.
+        const targetY = titleTop + lineIndex * lineGap + (Math.random() - 0.5) * titleFont * 0.14;
         cursor += charWidth;
         if (char === " ") return;
 
@@ -221,7 +225,7 @@ export default function TrampolineHero({
         const letter = {
           char,
           x: stage.x + landingOffset,
-          y: -120 - Math.random() * 180,
+          y: -60 - Math.random() * 100,
           vx: 0,
           vy: 0,
           rotation: (Math.random() - 0.5) * 0.35,
@@ -233,7 +237,8 @@ export default function TrampolineHero({
           big: wordStart,
           targetX,
           targetY,
-          releaseAt: 400 + groupNumber * 220 + indexInGroup * 60,
+          targetRotation: (Math.random() - 0.5) * 0.16,
+          releaseAt: 150 + groupNumber * 110 + indexInGroup * 35,
           state: "waiting",
 
           
@@ -282,7 +287,7 @@ export default function TrampolineHero({
       }
 
       if (letter.state === "falling" || letter.state === "bouncing") {
-        letter.vy += 0.55 * dt;
+        letter.vy += 0.9 * dt;
         letter.x += letter.vx * dt;
         letter.y += letter.vy * dt;
         letter.rotation += letter.vr * dt;
@@ -303,15 +308,21 @@ export default function TrampolineHero({
           letter.state = "bouncing";
           letter.bounceStartedAt ||= elapsed;
 
-          if (Math.abs(letter.vy) < 3 || letter.bounceCount >= 5) {
+          if (Math.abs(letter.vy) < 4 || letter.bounceCount >= 3) {
             letter.state = "settling";
           }
         }
 
         if (
           letter.state === "bouncing" &&
-          elapsed - letter.bounceStartedAt > 1200
+          elapsed - letter.bounceStartedAt > 600
         ) {
+          letter.state = "settling";
+        }
+
+        // Missed the trampoline (or was dropped off it): fly home instead of
+        // falling forever.
+        if (letter.y > stage.y + stage.ry + 40) {
           letter.state = "settling";
         }
 
@@ -326,10 +337,10 @@ export default function TrampolineHero({
       }
 
       if (letter.state === "settling") {
-        const ease = Math.min(1, 0.14 * dt);
+        const ease = Math.min(1, 0.22 * dt);
         letter.x += (letter.targetX - letter.x) * ease;
         letter.y += (letter.targetY - letter.y) * ease;
-        letter.rotation *= 0.88;
+        letter.rotation += (letter.targetRotation - letter.rotation) * 0.12;
         letter.vx *= 0.82;
         letter.vy *= 0.82;
         letter.squash += (1 - letter.squash) * Math.min(1, 0.15 * dt);
@@ -339,6 +350,11 @@ export default function TrampolineHero({
         ) {
           letter.x = letter.targetX;
           letter.y = letter.targetY;
+          letter.rotation = letter.targetRotation;
+          letter.squash = 1;
+          letter.stretch = 1;
+          letter.vx = 0;
+          letter.vy = 0;
           letter.state = "settled";
         }
       }
@@ -618,10 +634,25 @@ export default function TrampolineHero({
         frame = requestAnimationFrame(draw);
         return;
       }
-      const dt = Math.min(2.4, Math.max(0.5, (now - lastTime) / 16.67));
+      // Cap high enough that slow phones (~15fps) still run at real speed
+      // instead of slow motion.
+      const dt = Math.min(4, Math.max(0.5, (now - lastTime) / 16.67));
       lastTime = now;
       elapsed += dt * 16.67;
       impact *= 0.87;
+
+      // Once everything has landed the frame never changes, so stop
+      // repainting the heavy shadowBlur scene until something moves again.
+      const idle =
+        allSettled &&
+        !dragged &&
+        impact < 0.01 &&
+        letters.every((letter) => letter.state === "settled");
+      if (idle && !needsRedraw) {
+        frame = requestAnimationFrame(draw);
+        return;
+      }
+      needsRedraw = false;
 
       ctx.clearRect(0, 0, width, height);
       drawTrampoline();
@@ -638,7 +669,7 @@ export default function TrampolineHero({
         setSettled(true);
       }
 
-      if (elapsed > 3200 && !allSettled) {
+      if (elapsed > 2600 && !allSettled) {
         letters.forEach((letter) => {
           if (letter.state !== "settled") letter.state = "settling";
         });
@@ -847,6 +878,7 @@ export default function TrampolineHero({
                     fontFamily: "var(--font-archivo-black)",
                     fontSize: 26,
                     color: "#fff",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {stat.value}
