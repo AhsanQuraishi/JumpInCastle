@@ -225,7 +225,7 @@ export default function TrampolineHero({
         const letter = {
           char,
           x: stage.x + landingOffset,
-          y: -60 - Math.random() * 100,
+          y: -90 - Math.random() * 140,
           vx: 0,
           vy: 0,
           rotation: (Math.random() - 0.5) * 0.35,
@@ -238,7 +238,7 @@ export default function TrampolineHero({
           targetX,
           targetY,
           targetRotation: (Math.random() - 0.5) * 0.16,
-          releaseAt: 150 + groupNumber * 110 + indexInGroup * 35,
+          releaseAt: 250 + groupNumber * 160 + indexInGroup * 45,
           state: "waiting",
 
           
@@ -287,7 +287,7 @@ export default function TrampolineHero({
       }
 
       if (letter.state === "falling" || letter.state === "bouncing") {
-        letter.vy += 0.9 * dt;
+        letter.vy += 0.7 * dt;
         letter.x += letter.vx * dt;
         letter.y += letter.vy * dt;
         letter.rotation += letter.vr * dt;
@@ -308,14 +308,14 @@ export default function TrampolineHero({
           letter.state = "bouncing";
           letter.bounceStartedAt ||= elapsed;
 
-          if (Math.abs(letter.vy) < 4 || letter.bounceCount >= 3) {
+          if (Math.abs(letter.vy) < 3.5 || letter.bounceCount >= 4) {
             letter.state = "settling";
           }
         }
 
         if (
           letter.state === "bouncing" &&
-          elapsed - letter.bounceStartedAt > 600
+          elapsed - letter.bounceStartedAt > 850
         ) {
           letter.state = "settling";
         }
@@ -337,7 +337,7 @@ export default function TrampolineHero({
       }
 
       if (letter.state === "settling") {
-        const ease = Math.min(1, 0.22 * dt);
+        const ease = Math.min(1, 0.17 * dt);
         letter.x += (letter.targetX - letter.x) * ease;
         letter.y += (letter.targetY - letter.y) * ease;
         letter.rotation += (letter.targetRotation - letter.rotation) * 0.12;
@@ -669,7 +669,7 @@ export default function TrampolineHero({
         setSettled(true);
       }
 
-      if (elapsed > 2600 && !allSettled) {
+      if (elapsed > 3400 && !allSettled) {
         letters.forEach((letter) => {
           if (letter.state !== "settled") letter.state = "settling";
         });
